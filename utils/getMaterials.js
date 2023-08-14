@@ -7,7 +7,7 @@ const getMaterials = ({ textures }) => {
   });
 
   const textMaterial = new THREE.MeshStandardMaterial({
-    color: "#ec4899",
+    color: 0xffffff,
     metalness: 0.4,
     roughness: 0.54,
   });

@@ -10,14 +10,15 @@ import getMaterials from "./utils/getMaterials.js";
 import getText from "./utils/getText.js";
 import addLights from "./utils/addLights.js";
 import addControls from "./utils/addControls.js";
+import getGeometries from "./utils/getGeometries.js";
+import createCubes from "./utils/createCubes.js";
+import createTetrahedrons from "./utils/createTetrahedrons.js";
 
 const canvas = document.querySelector("#app");
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
-const tetrahedrons = [];
-const cubes = [];
 
 const scene = new THREE.Scene();
 
@@ -44,6 +45,17 @@ const { geometryMaterial, textMaterial } = getMaterials({
  */
 
 getText({ material: textMaterial, scene });
+const { tetrahedronGeometry, cubeGeometry } = getGeometries();
+const cubes = createCubes({
+  scene,
+  geometry: cubeGeometry,
+  material: textMaterial,
+});
+const tetrahedrons = createTetrahedrons({
+  scene,
+  geometry: tetrahedronGeometry,
+  material: textMaterial,
+});
 
 /**
  * Controls
@@ -73,4 +85,4 @@ if (window.location.search.includes("debug")) {
 }
 
 resizeWindow({ camera, renderer, sizes });
-tick({ renderer, scene, camera, controls });
+tick({ renderer, scene, camera, controls, cubes, tetrahedrons });
