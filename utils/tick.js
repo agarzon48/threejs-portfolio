@@ -2,16 +2,15 @@ import * as THREE from "three";
 
 const clock = new THREE.Clock();
 
-const tick = ({ sampleCube, renderer, scene, camera }) => {
+const tick = ({ renderer, scene, camera, controls }) => {
   const elapsedTime = clock.getElapsedTime();
-
-  sampleCube.rotation.x = elapsedTime;
-  sampleCube.rotation.y = elapsedTime;
 
   renderer.render(scene, camera);
 
+  controls.update();
+
   window.requestAnimationFrame(() =>
-    tick({ sampleCube, renderer, scene, camera })
+    tick({ renderer, scene, camera, controls })
   );
 };
 

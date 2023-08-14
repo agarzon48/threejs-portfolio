@@ -5,8 +5,11 @@ import addCamera from "./utils/addCamera.js";
 import addRenderer from "./utils/addRenderer.js";
 import debug from "./utils/debug.js";
 import tick from "./utils/tick.js";
-import addSampleCube from "./utils/addSampleCube.js";
 import getTextures from "./utils/getTextures.js";
+import getMaterials from "./utils/getMaterials.js";
+import getText from "./utils/getText.js";
+import addLights from "./utils/addLights.js";
+import addControls from "./utils/addControls.js";
 
 const canvas = document.querySelector("#app");
 const sizes = {
@@ -27,14 +30,47 @@ scene.add(camera);
 
 const { comicTexture } = getTextures();
 
-const sampleCube = addSampleCube();
-scene.add(sampleCube);
+/**
+ * Materials
+ */
+const { geometryMaterial, textMaterial } = getMaterials({
+  textures: {
+    comic: comicTexture,
+  },
+});
+
+/**
+ * Objects
+ */
+
+getText({ material: textMaterial, scene });
+
+/**
+ * Controls
+ */
+
+const controls = addControls({ camera, canvas });
+
+/**
+ * Lights
+ */
+const { ambientLight, pointLight1, pointLight2, pointLight3 } = addLights({
+  scene,
+});
 
 const renderer = addRenderer({ canvas, sizes });
 
 if (window.location.search.includes("debug")) {
-  debug({ scene, camera, sampleCube });
+  debug({
+    scene,
+    camera,
+    textMaterial,
+    ambientLight,
+    pointLight1,
+    pointLight2,
+    pointLight3,
+  });
 }
 
 resizeWindow({ camera, renderer, sizes });
-tick({ sampleCube, renderer, scene, camera });
+tick({ renderer, scene, camera, controls });
