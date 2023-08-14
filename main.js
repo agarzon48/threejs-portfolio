@@ -1,67 +1,40 @@
 import * as THREE from "three";
-import * as dat from "lil-gui";
+
+import resizeWindow from "./utils/resizeWindow.js";
+import addCamera from "./utils/addCamera.js";
+import addRenderer from "./utils/addRenderer.js";
+import debug from "./utils/debug.js";
+import tick from "./utils/tick.js";
+import addSampleCube from "./utils/addSampleCube.js";
+import getTextures from "./utils/getTextures.js";
 
 const canvas = document.querySelector("#app");
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
+const tetrahedrons = [];
+const cubes = [];
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(
-  75,
-  sizes.width / sizes.height,
-  0.1,
-  1000
-);
-camera.position.x = 0.7;
-camera.position.y = 1;
-camera.position.z = 3;
+const camera = addCamera({ sizes });
 scene.add(camera);
 
-const sampleCube = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: 0xff0000 })
-);
+/**
+ * Textures
+ */
+
+const { comicTexture } = getTextures();
+
+const sampleCube = addSampleCube();
 scene.add(sampleCube);
 
+const renderer = addRenderer({ canvas, sizes });
+
 if (window.location.search.includes("debug")) {
-  const axesHelper = new THREE.AxesHelper(5);
-  scene.add(axesHelper);
-
-  const gui = new dat.GUI();
-
-  const cameraFolder = gui.addFolder("Camera");
-  cameraFolder.add(camera.position, "x").min(-10).max(10).step(0.01);
-  cameraFolder.add(camera.position, "y").min(-10).max(10).step(0.01);
-  cameraFolder.add(camera.position, "z").min(-10).max(10).step(0.01);
-  cameraFolder.open();
-
-  const cubeFolder = gui.addFolder("Cube");
-  cubeFolder.add(sampleCube.position, "x").min(-10).max(10).step(0.01);
-  cubeFolder.add(sampleCube.position, "y").min(-10).max(10).step(0.01);
-  cubeFolder.add(sampleCube.position, "z").min(-10).max(10).step(0.01);
-  cubeFolder.open();
-
-  gui.add(sampleCube, "visible");
+  debug({ scene, camera, sampleCube });
 }
 
-const renderer = new THREE.WebGLRenderer({ canvas });
-renderer.setSize(sizes.width, sizes.height);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-const clock = new THREE.Clock();
-
-const tick = () => {
-  const elapsedTime = clock.getElapsedTime();
-
-  sampleCube.rotation.x = elapsedTime;
-  sampleCube.rotation.y = elapsedTime;
-
-  renderer.render(scene, camera);
-
-  window.requestAnimationFrame(tick);
-};
-
-tick();
+resizeWindow({ camera, renderer, sizes });
+tick({ sampleCube, renderer, scene, camera });
