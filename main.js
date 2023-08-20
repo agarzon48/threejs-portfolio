@@ -66,9 +66,10 @@ const controls = addControls({ camera, canvas });
 /**
  * Lights
  */
-const { ambientLight, pointLight1, pointLight2, pointLight3 } = addLights({
-  scene,
-});
+const { ambientLight, pointLight1, pointLight2, pointLight3, hemisphereLight } =
+  addLights({
+    scene,
+  });
 
 const renderer = addRenderer({ canvas, sizes });
 
@@ -81,6 +82,7 @@ if (window.location.search.includes("debug")) {
     pointLight1,
     pointLight2,
     pointLight3,
+    hemisphereLight,
   });
 }
 
